@@ -15,7 +15,7 @@ const Container = styled.div`
 const Header = styled.header`
     height: 10vh;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
 `;
 
@@ -58,7 +58,7 @@ const Tabs = styled.div`
   gap: 10px;
 `;
 
-const Tab = styled.span<{isActive: boolean}>`
+const Tab = styled.span<{isactive: boolean}>`
   text-align: center;
   text-transform: uppercase;
   font-size: 12px;
@@ -66,10 +66,17 @@ const Tab = styled.span<{isActive: boolean}>`
   background-color: rgba(0, 0, 0, 0.5);
   padding: 7px 0px;
   border-radius: 10px;
-  color: ${props => props.isActive ? props.theme.accentColor : props.theme.textColor};
+  color: ${props => props.isactive ? props.theme.accentColor : props.theme.textColor};
   a {
     display: block;
   }
+`;
+
+const BackArrow = styled.span`
+    font-size: 30px;
+    font-weight: bold;
+    margin-left: 0px;
+    color: white;
 `;
 
 interface RouteParams{
@@ -101,7 +108,7 @@ interface InfoData {
     last_data_at: string;
 }
 
-interface PriceData {
+export interface PriceData {
     id: string;
     name: string;
     symbol: string;
@@ -145,9 +152,9 @@ function Coin() {
     const {isLoading: tickersLoading, data: tickersData} = useQuery<PriceData>(
         ["ticker", coinId], 
         () => fetchCoinTickers(coinId),
-        {
-            refetchInterval: 5000,
-        }
+        // {
+        //     refetchInterval: 5000000,
+        // }
     );
 
     const loading = infoLoading && tickersLoading;
@@ -158,6 +165,9 @@ function Coin() {
                 <title>{state?.name ? state.name : loading ? "Loading..." : infoData?.name}</title>
             </Helmet>
             <Header>
+                <Link to="/">
+                    <BackArrow>&larr;</BackArrow>
+                </Link>
                 <Title>{state?.name ? state.name : loading ? "Loading..." : infoData?.name}</Title>
             </Header>
             {loading ? 
@@ -191,11 +201,14 @@ function Coin() {
                         </Overview>
 
                         <Tabs>
-                            <Tab isActive={chartMatch !== null}>
+                            <Tab isactive={chartMatch !== null}>
                                 <Link to={`/${coinId}/chart`}>Chart</Link>
                             </Tab>
-                            <Tab isActive={priceMatch !== null}>
-                                <Link to={`/${coinId}/price`}>Price</Link>
+                            <Tab isactive={priceMatch !== null}>
+                                <Link to={{
+                                    pathname: `/${coinId}/price`,
+                                    state: tickersData,
+                                }}>Price</Link>
                             </Tab>
                         </Tabs>
 

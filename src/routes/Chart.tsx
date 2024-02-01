@@ -21,14 +21,14 @@ function Chart({coinId}: ChartProps) {
     const {isLoading, data} = useQuery<IHistorical[]>(
         ["chart", coinId], 
         () => fetchCoinHistory(coinId),
-        {
-            refetchInterval: 10000,
-        }
+        // {
+        //     refetchInterval: 10000000,
+        // }
     );
     return (
         <div>
             {isLoading ? 
-                "Loading Chart..." : 
+                "Loading Line Chart..." : 
                 <ApexCharts 
                     type='line' 
                     series={[
@@ -85,6 +85,35 @@ function Chart({coinId}: ChartProps) {
                                 formatter: (value) => `$${value.toFixed(2)}`,
                             }
                         }
+                    }}
+                />
+            }
+
+            {isLoading ? 
+                "Loading CandleStick Chart..." : 
+                <ApexCharts 
+                    type='candlestick'
+                    series={[{
+                        name: 'candle',
+                        data: data?.map(price => ({x: new Date(price.time_close), y: [price.open, price.high, price.low, price.close]})) ?? [],
+                    }]}
+                    options={{
+                        theme: {
+                            mode: 'dark',
+                        },
+                        chart: {
+                          height: 350,
+                          type: 'candlestick',
+                          toolbar: {
+                            show: false,
+                          },
+                          background: "transparent",
+                        },
+                        xaxis: {
+                            labels: {
+                                show: false,
+                            },
+                        },
                     }}
                 />
             }
