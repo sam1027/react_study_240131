@@ -76,7 +76,7 @@ const BackArrow = styled.span`
     font-size: 30px;
     font-weight: bold;
     margin-left: 0px;
-    color: white;
+    color: ${props => props.theme.textColor};
 `;
 
 interface RouteParams{
@@ -185,7 +185,7 @@ function Coin() {
                             </OverviewItem>
                             <OverviewItem>
                             <span>Price:</span>
-                            <span>${tickersData?.quotes.USD.price.toFixed(2)}</span>
+                            <span>${tickersData?.quotes?.USD?.price?.toFixed(3)}</span>
                             </OverviewItem>
                         </Overview>
                         <Description>{infoData?.description}</Description>
@@ -214,7 +214,7 @@ function Coin() {
 
                         <Switch>
                             <Route path="/:coinId/chart">
-                                <Chart coinId={coinId}/>
+                                <Chart coinId={coinId} />
                             </Route>
                             <Route path="/:coinId/price">
                                 <Price />
